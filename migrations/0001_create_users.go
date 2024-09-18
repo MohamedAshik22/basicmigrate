@@ -15,3 +15,7 @@ func (m CreateUserTable) Up(db *gorm.DB) error {
 func (m CreateUserTable) Down(db *gorm.DB) error {
 	return db.Migrator().DropTable(&models.User{})
 }
+
+func (m CreateUserTable) MigrationID() string {
+	return "0001_create_users"
+}

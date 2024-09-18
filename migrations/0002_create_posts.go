@@ -15,3 +15,7 @@ func (m CreatePostTable) Up(db *gorm.DB) error {
 func (m CreatePostTable) Down(db *gorm.DB) error {
 	return db.Migrator().DropTable(&models.Post{})
 }
+
+func (m CreatePostTable) MigrationID() string {
+	return "0002_create_posts"
+}
