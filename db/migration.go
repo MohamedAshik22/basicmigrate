@@ -1,7 +1,7 @@
 package db
 
 import (
-	"basicmigrate/migrations" // Import the migrations package here
+	"basicmigrate/migrations"
 	"basicmigrate/models"
 	"log"
 	"time"
@@ -15,9 +15,8 @@ type Migration interface {
 	MigrationID() string
 }
 
-// RunMigrations applies all migrations that haven't been applied yet
 func RunMigrations(db *gorm.DB) {
-	migrationList := migrations.GetMigrations() // Fetch migrations
+	migrationList := migrations.GetMigrations()
 
 	for _, migration := range migrationList {
 		if !isMigrationApplied(db, migration.MigrationID()) {
@@ -33,10 +32,8 @@ func RunMigrations(db *gorm.DB) {
 	log.Println("Migrations ran successfully!")
 }
 
-// RollbackMigration rolls back a specific migration by ID
-// Correct definition of RollbackMigrations function
 func RollbackMigrations(db *gorm.DB) {
-	migrationList := migrations.GetMigrations() // Get the list of migrations from the migrations package
+	migrationList := migrations.GetMigrations()
 	for i := len(migrationList) - 1; i >= 0; i-- {
 		migration := migrationList[i]
 		if isMigrationApplied(db, migration.MigrationID()) {
@@ -51,7 +48,7 @@ func RollbackMigrations(db *gorm.DB) {
 }
 
 func RollbackMigration(db *gorm.DB, migrationID string) {
-	migrationList := migrations.GetMigrations() // Get the list of migrations
+	migrationList := migrations.GetMigrations()
 	for _, migration := range migrationList {
 		if migration.MigrationID() == migrationID {
 			if isMigrationApplied(db, migrationID) {
@@ -70,14 +67,12 @@ func RollbackMigration(db *gorm.DB, migrationID string) {
 	log.Printf("Migration %s not found", migrationID)
 }
 
-// Check if the migration has been applied
 func isMigrationApplied(db *gorm.DB, migrationID string) bool {
 	var count int64
 	db.Model(&models.MigrationHistory{}).Where("migration_id = ?", migrationID).Count(&count)
 	return count > 0
 }
 
-// Record the migration in the migration history
 func recordMigration(db *gorm.DB, migrationID string) {
 	db.Create(&models.MigrationHistory{
 		MigrationID: migrationID,
@@ -85,7 +80,6 @@ func recordMigration(db *gorm.DB, migrationID string) {
 	})
 }
 
-// Remove the migration record from migration history after rollback
 func removeMigrationRecord(db *gorm.DB, migrationID string) {
 	db.Where("migration_id = ?", migrationID).Delete(&models.MigrationHistory{})
 }
